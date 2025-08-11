@@ -1,7 +1,8 @@
 const CACHE_NAME = 'bible-and-doctrine-explorer-cache-v1';
 const ASSETS_TO_CACHE = [
   '/bible-and-doctrine-explorer/',
-  '/bible-and-doctrine-explorer/index.html',
+  '/bible-and-doctrine-explorer/docs/',
+  '/bible-and-doctrine-explorer/docs/index.html',
   '/bible-and-doctrine-explorer/manifest.json',
   '/bible-and-doctrine-explorer/icon-192x192.png',
   '/bible-and-doctrine-explorer/icon-512x512.png',
