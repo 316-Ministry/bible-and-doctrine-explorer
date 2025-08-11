@@ -13,7 +13,6 @@
             href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lora:wght@400;600&display=swap"
             rel="stylesheet"
         />
-        <link rel="manifest" href="/bible-and-doctrine-explorer/manifest.json"/>
         <style>
             body {
                 font-family: "Inter", sans-serif;
@@ -951,45 +950,30 @@
             const videosTab = document.getElementById("videos-tab");
             const contentOt = document.getElementById("content-ot");
             const contentNt = document.getElementById("content-nt");
-            const contentApocrypha =
-                document.getElementById("content-apocrypha");
+            const contentApocrypha = document.getElementById("content-apocrypha");
             const contentVideos = document.getElementById("content-videos");
             const filtersOtContainer = document.getElementById("filters-ot");
             const booksOtContainer = document.getElementById("books-ot");
             const filtersNtContainer = document.getElementById("filters-nt");
             const booksNtContainer = document.getElementById("books-nt");
-            const filtersApocryphaContainer =
-                document.getElementById("filters-apocrypha");
-            const booksApocryphaContainer =
-                document.getElementById("books-apocrypha");
-            const filtersVideosContainer =
-                document.getElementById("filters-videos");
+            const filtersApocryphaContainer = document.getElementById("filters-apocrypha");
+            const booksApocryphaContainer = document.getElementById("books-apocrypha");
+            const filtersVideosContainer = document.getElementById("filters-videos");
             const videoPlayer = document.getElementById("video-player");
 
             // Sacraments Tab Elements
-            const sacramentSubTabsContainer =
-                document.getElementById("sacrament-sub-tabs");
-            const filtersSacramentsContainer =
-                document.getElementById("filters-sacraments");
-            const sacramentDetailsContainer = document.getElementById(
-                "sacrament-details-container",
-            );
-            const sacramentDetailTitle = document.getElementById(
-                "sacrament-detail-title",
-            );
-            const sacramentGeneralDescription = document.getElementById(
-                "sacrament-general-description",
-            );
-            const sacramentDenominationInfo = document.getElementById(
-                "sacrament-denomination-info",
-            );
+            const sacramentSubTabsContainer = document.getElementById("sacrament-sub-tabs");
+            const filtersSacramentsContainer = document.getElementById("filters-sacraments");
+            const sacramentDetailsContainer = document.getElementById("sacrament-details-container");
+            const sacramentDetailTitle = document.getElementById("sacrament-detail-title");
+            const sacramentGeneralDescription = document.getElementById("sacrament-general-description");
+            const sacramentDenominationInfo = document.getElementById("sacrament-denomination-info");
 
             // Modal Elements
             const modal = document.getElementById("modal");
             const modalContent = document.getElementById("modal-content");
             const modalTitle = document.getElementById("modal-title");
-            const modalDescription =
-                document.getElementById("modal-description");
+            const modalDescription = document.getElementById("modal-description");
             const modalClose = document.getElementById("modal-close");
 
             function openModal(book) {
@@ -1080,8 +1064,7 @@
 
             function createFilterButton(mainTab, subTab, genreOrDenomination) {
                 const button = document.createElement("button");
-                button.className =
-                    "filter-inactive py-2 px-4 rounded-full text-sm font-semibold transition-all duration-300";
+                button.className = "filter-inactive py-2 px-4 rounded-full text-sm font-semibold transition-all duration-300";
                 button.textContent = genreOrDenomination;
                 button.dataset.filter = genreOrDenomination;
                 button.addEventListener("click", () => {
@@ -1509,19 +1492,6 @@
             // Initial load
             switchMainTab("bible");
             
-        </script>
-        <script>
-            if('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('/bible-and-doctrine-explorer/service-worker.js')
-                    .then(registration => {
-                        console.log('Service Worker registered with scope:', registration.scope);
-                    })
-                    .catch(error => {
-                        console.log('Service Worker registration failed:', error);
-                    });
-                });
-            }
         </script>
     </body>
 </html>
