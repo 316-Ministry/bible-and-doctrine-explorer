@@ -2,7 +2,7 @@
   "name": "Bible Books & Divisions Explorer",
   "short_name": "Bible Overview Explorer",
   "description": "An interactive tool to explore Bible book divisions & Christian doctrines.",
-  "start_url": "/bible-and-doctrine-explorer/",
+  "start_url": "/bible-and-doctrine-explorer/docs",
   "display": "standalone",
   "background_color": "#FDFBF8",
   "theme_color": "#A38D7B",
