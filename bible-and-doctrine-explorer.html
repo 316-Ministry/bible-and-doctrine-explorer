@@ -1,0 +1,1511 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Bible Books & Divisions Explorer</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lora:wght@400;600&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            body {
+                font-family: "Inter", sans-serif;
+                background-color: #fdfbf8;
+                color: #4a4a4a;
+            }
+            .font-serif {
+                font-family: "Lora", serif;
+            }
+            .tab-active {
+                background-color: #a38d7b;
+                color: #ffffff;
+                font-weight: 600;
+            }
+            .tab-inactive {
+                background-color: #efeae6;
+                color: #a38d7b;
+            }
+            .filter-active {
+                background-color: #a38d7b;
+                color: #ffffff;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            .filter-inactive {
+                background-color: #ffffff;
+                color: #a38d7b;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            }
+            .book-card {
+                transition: all 0.3s ease;
+                border: 1px solid #efeae6;
+            }
+            .book-card:hover {
+                transform: translateY(-5px);
+                box-shadow:
+                    0 10px 15px -3px rgba(0, 0, 0, 0.07),
+                    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+                border-color: #a38d7b;
+            }
+            .chart-container {
+                position: relative;
+                width: 100%;
+                max-width: 400px;
+                margin-left: auto;
+                margin-right: auto;
+                height: 300px;
+                max-height: 400px;
+            }
+            @media (min-width: 768px) {
+                .chart-container {
+                    height: 350px;
+                }
+            }
+            .modal-overlay {
+                transition: opacity 0.3s ease;
+            }
+            .total-books-display {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                pointer-events: none;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                width: 100%;
+                height: 100%;
+            }
+            .total-books-display .number {
+                font-size: 2.25rem;
+                font-weight: 700;
+                line-height: 1;
+                margin-bottom: 0.25rem;
+            }
+            .total-books-display .label {
+                font-size: 1.125rem;
+                line-height: 1;
+            }
+            .video-player-container {
+                position: relative;
+                width: 100%;
+                padding-bottom: 56.25%;
+                height: 0;
+                overflow: hidden;
+                background-color: #000;
+                border-radius: 0.5rem;
+            }
+            .video-player-container iframe {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                border: 0;
+            }
+        </style>
+    </head>
+    <body class="antialiased">
+        <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+            <header class="text-center mb-12">
+                <h1
+                    class="text-4xl md:text-5xl font-bold font-serif text-[#A38D7B]"
+                >
+                    Bible Book & Christian Doctrine Explorer
+                </h1>
+                <p class="mt-4 text-lg text-gray-600">
+                    Explore the books of the Bible and their categories, as well
+                    as various Christian Doctrines. (I'll be adding comments &
+                    fleshing out descriptions as time goes on. Also gonna be
+                    adding some other sections regarding texts, manuscripts,
+                    timelines, etc.)
+                </p>
+            </header>
+
+            <main>
+                <!-- Main Tabs -->
+                <div
+                    class="w-full max-w-md mx-auto bg-[#EFEAE6] rounded-full p-1 flex mb-8"
+                    id="main-tabs-container"
+                >
+                    <button
+                        id="bible-main-tab"
+                        class="w-1/2 p-3 rounded-full text-center transition-colors duration-300"
+                    >
+                        Bible
+                    </button>
+                    <button
+                        id="sacraments-main-tab"
+                        class="w-1/2 p-3 rounded-full text-center transition-colors duration-300"
+                    >
+                        Sacraments
+                    </button>
+                </div>
+
+                <!-- Content for Bible Main Tab -->
+                <div id="bible-content-wrapper">
+                    <!-- Sub-tabs for Bible -->
+                    <div
+                        class="w-full max-w-lg mx-auto bg-[#EFEAE6] rounded-full p-1 flex mb-8"
+                    >
+                        <button
+                            id="ot-tab"
+                            class="w-1/4 p-3 rounded-full text-center transition-colors duration-300"
+                        >
+                            Old Testament
+                        </button>
+                        <button
+                            id="nt-tab"
+                            class="w-1/4 p-3 rounded-full text-center transition-colors duration-300"
+                        >
+                            New Testament
+                        </button>
+                        <button
+                            id="apocrypha-tab"
+                            class="w-1/4 p-3 rounded-full text-center transition-colors duration-300"
+                        >
+                            Apocrypha
+                        </button>
+                        <button
+                            id="videos-tab"
+                            class="w-1/4 p-3 rounded-full text-center transition-colors duration-300"
+                        >
+                            Videos
+                        </button>
+                    </div>
+
+                    <div id="content-ot">
+                        <div class="text-center mb-8">
+                            <h2
+                                class="text-3xl font-serif font-semibold text-gray-700 mb-2"
+                            >
+                                The Old Testament
+                            </h2>
+                            <p class="text-gray-500">
+                                The Old Testament is the first division of the
+                                Christian biblical canon (standardized
+                                collection of texts). It contains books of law,
+                                history, poetry, and prophecy that form the
+                                foundation of the biblical narrative,
+                                chronicling God's covenant relationship with His
+                                people.
+                            </p>
+                        </div>
+                        <div
+                            id="filters-ot"
+                            class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8"
+                        ></div>
+                        <div
+                            class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center"
+                        >
+                            <div
+                                id="books-ot"
+                                class="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-4"
+                            ></div>
+                            <div class="md:col-span-5">
+                                <div class="chart-container">
+                                    <canvas id="chart-ot"></canvas>
+                                    <div class="total-books-display">
+                                        <div class="number"></div>
+                                        <div class="label"></div>
+                                    </div>
+                                </div>
+                                <p class="text-center mt-4 text-gray-500">
+                                    Book distribution by division in the Old
+                                    Testament.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="content-nt" class="hidden">
+                        <div class="text-center mb-8">
+                            <h2
+                                class="text-3xl font-serif font-semibold text-gray-700 mb-2"
+                            >
+                                The New Testament
+                            </h2>
+                            <p class="text-gray-500">
+                                The New Testament is the second division of the
+                                Christian biblical canon. It discusses the
+                                teachings and person of Jesus, as well as events
+                                in first-century Christianity. Its sections
+                                include the Gospels, the history of the early
+                                church, various letters (epistles), and
+                                apocalyptic prophecy.
+                            </p>
+                        </div>
+                        <div
+                            id="filters-nt"
+                            class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8"
+                        ></div>
+                        <div
+                            class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center"
+                        >
+                            <div
+                                id="books-nt"
+                                class="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-4"
+                            ></div>
+                            <div class="md:col-span-5">
+                                <div class="chart-container">
+                                    <canvas id="chart-nt"></canvas>
+                                    <div class="total-books-display">
+                                        <div class="number"></div>
+                                        <div class="label"></div>
+                                    </div>
+                                </div>
+                                <p class="text-center mt-4 text-gray-500">
+                                    Book distribution by division in the New
+                                    Testament.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="content-apocrypha" class="hidden">
+                        <div class="text-center mb-8">
+                            <h2
+                                class="text-3xl font-serif font-semibold text-gray-700 mb-2"
+                            >
+                                The Apocrypha
+                            </h2>
+                            <p class="text-gray-500">
+                                The Apocrypha, sometimes called the
+                                'Deuterocanonical' (meaning 'second canon')
+                                books, are books or passages that are considered
+                                by some Christian denominations to be canonical,
+                                but are not accepted by others (such as most
+                                Protestant denominations). They often provide
+                                historical context, wisdom literature, or
+                                prophetic visions from the intertestamental
+                                period.
+                            </p>
+                        </div>
+                        <div
+                            id="filters-apocrypha"
+                            class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8"
+                        ></div>
+                        <div
+                            class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center"
+                        >
+                            <div
+                                id="books-apocrypha"
+                                class="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-4"
+                            ></div>
+                            <div class="md:col-span-5">
+                                <div class="chart-container">
+                                    <canvas id="chart-apocrypha"></canvas>
+                                    <div class="total-books-display">
+                                        <div class="number"></div>
+                                        <div class="label"></div>
+                                    </div>
+                                </div>
+                                <p class="text-center mt-4 text-gray-500">
+                                    Book distribution by division in the
+                                    Apocrypha.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="content-videos" class="hidden">
+                        <div class="text-center mb-8">
+                            <h2
+                                class="text-3xl font-serif font-semibold text-gray-700 mb-2"
+                            >
+                                Videos on Bible Topics
+                            </h2>
+                            <p class="text-gray-500">
+                                Explore introductory videos about the Bible -
+                                including its nature, writing styles, and unique
+                                literary aspects.
+                            </p>
+                        </div>
+                        <div
+                            id="filters-videos"
+                            class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8"
+                        ></div>
+                        <div class="flex justify-center">
+                            <div class="w-full max-w-3xl">
+                                <div class="video-player-container">
+                                    <iframe
+                                        id="video-player"
+                                        src=""
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                        allowfullscreen
+                                    ></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content for Sacraments Main Tab -->
+                <div id="sacraments-content-wrapper" class="hidden">
+                    <div class="text-center mb-8">
+                        <h2
+                            class="text-3xl font-serif font-semibold text-gray-700 mb-2"
+                        >
+                            Christian Sacraments & Ordinances
+                        </h2>
+                        <p class="text-gray-500">
+                            Explore the Christian sacraments and their
+                            interpretations across various denominations (this
+                            is not an exhaustive list).
+                        </p>
+                    </div>
+                    <!-- Sub-tabs for Sacraments -->
+                    <div
+                        class="w-full max-w-lg mx-auto bg-[#EFEAE6] rounded-full p-1 flex flex-wrap justify-center gap-2 mb-8"
+                        id="sacrament-sub-tabs"
+                    ></div>
+                    <div
+                        id="filters-sacraments"
+                        class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8"
+                    ></div>
+                    <div class="grid grid-cols-1">
+                        <div
+                            id="sacrament-details-container"
+                            class="bg-white p-6 rounded-lg shadow"
+                        >
+                            <h3
+                                id="sacrament-detail-title"
+                                class="text-2xl font-bold font-serif text-[#A38D7B] mb-4"
+                            ></h3>
+                            <p
+                                id="sacrament-general-description"
+                                class="text-gray-600 mb-4"
+                            ></p>
+                            <div
+                                id="sacrament-denomination-info"
+                                class="text-gray-700"
+                            >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <div
+            id="modal"
+            class="modal-overlay fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center p-4 hidden z-50 opacity-0"
+        >
+            <div
+                id="modal-content"
+                class="bg-white rounded-lg shadow-2xl p-6 md:p-8 w-full max-w-lg mx-auto transform scale-95 transition-transform duration-300"
+            >
+                <h3
+                    id="modal-title"
+                    class="text-2xl font-bold font-serif text-[#A38D7B] mb-4"
+                ></h3>
+                <p id="modal-description" class="text-gray-700 mb-6"></p>
+                <button
+                    id="modal-close"
+                    class="w-full bg-[#A38D7B] text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition-colors"
+                >
+                    Close
+                </button>
+            </div>
+        </div>
+
+        <script>
+            const appData = {
+                bible: {
+                    name: "Bible",
+                    subTabs: ["ot", "nt", "apocrypha", "videos"],
+                    ot: {
+                        name: "Old Testament",
+                        genres: {
+                            Pentateuch: [
+                                {
+                                    name: "Genesis",
+                                    desc: "Creation, fall, flood, patriarchs: Abraham, Isaac, Jacob, Joseph.",
+                                },
+                                {
+                                    name: "Exodus",
+                                    desc: "Israel's deliverance from Egypt, wilderness journey, giving of the Law at Sinai.",
+                                },
+                                {
+                                    name: "Leviticus",
+                                    desc: "Laws for holiness, worship, and sacrifices for the Israelites.",
+                                },
+                                {
+                                    name: "Numbers",
+                                    desc: "Israel's wilderness wanderings, censuses, and preparation for entering Canaan.",
+                                },
+                                {
+                                    name: "Deuteronomy",
+                                    desc: "Moses' farewell speeches, reiteration of the Law, and covenant renewal.",
+                                },
+                            ],
+                            "Historical Books": [
+                                {
+                                    name: "Joshua",
+                                    desc: "Conquest of Canaan and division of the land among the tribes.",
+                                },
+                                {
+                                    name: "Judges",
+                                    desc: "Cycles of apostasy, oppression, repentance, and deliverance through judges.",
+                                },
+                                {
+                                    name: "Ruth",
+                                    desc: "A Moabite woman's loyalty, faith, and inclusion in David's lineage.",
+                                },
+                                {
+                                    name: "1 Samuel",
+                                    desc: "Transition from judges to monarchy, rise of Samuel, Saul, and David.",
+                                },
+                                {
+                                    name: "2 Samuel",
+                                    desc: "David's reign as king, his successes, failures, and family struggles.",
+                                },
+                                {
+                                    name: "1 Kings",
+                                    desc: "Reign of Solomon, division of the kingdom, and early kings of Israel and Judah.",
+                                },
+                                {
+                                    name: "2 Kings",
+                                    desc: "History of the divided kingdoms, prophetic ministries, and the fall of Israel and Judah.",
+                                },
+                                {
+                                    name: "1 Chronicles",
+                                    desc: "Genealogies and a focus on David's reign and the temple preparations.",
+                                },
+                                {
+                                    name: "2 Chronicles",
+                                    desc: "History of the kings of Judah, with emphasis on righteous kings and temple worship.",
+                                },
+                                {
+                                    name: "Ezra",
+                                    desc: "Return of exiles from Babylon and the rebuilding of the temple.",
+                                },
+                                {
+                                    name: "Nehemiah",
+                                    desc: "Rebuilding of Jerusalem's walls and spiritual revival among the returned exiles.",
+                                },
+                                {
+                                    name: "Esther",
+                                    desc: "A Jewish queen saves her people from genocide in Persia.",
+                                },
+                            ],
+                            "Poetic & Wisdom": [
+                                {
+                                    name: "Job",
+                                    desc: "Exploration of suffering, divine justice, and faith in the midst of adversity.",
+                                },
+                                {
+                                    name: "Psalms",
+                                    desc: "A collection of songs and prayers expressing a wide range of human emotions and experiences.",
+                                },
+                                {
+                                    name: "Proverbs",
+                                    desc: "Practical wisdom for daily living, emphasizing moral and ethical conduct.",
+                                },
+                                {
+                                    name: "Ecclesiastes",
+                                    desc: "Philosophical reflections on the meaning of life, vanity, and the pursuit of wisdom.",
+                                },
+                                {
+                                    name: "Song of Solomon",
+                                    desc: "A poetic celebration of romantic love between a man and a woman.",
+                                },
+                            ],
+                            "Major Prophets": [
+                                {
+                                    name: "Isaiah",
+                                    desc: "Prophecies of judgment and salvation, focusing on the coming Messiah.",
+                                },
+                                {
+                                    name: "Jeremiah",
+                                    desc: "Prophecies to Judah before and during the Babylonian exile, emphasizing repentance.",
+                                },
+                                {
+                                    name: "Lamentations",
+                                    desc: "Poetic laments over the destruction of Jerusalem and the suffering of its people.",
+                                },
+                                {
+                                    name: "Ezekiel",
+                                    desc: "Prophecies to the exiles in Babylon, including visions of God's glory and restoration.",
+                                },
+                                {
+                                    name: "Daniel",
+                                    desc: "Narratives of Daniel and his friends in exile, and apocalyptic visions of future kingdoms.",
+                                },
+                            ],
+                            "Minor Prophets": [
+                                {
+                                    name: "Hosea",
+                                    desc: "Prophecy illustrating God's covenant love despite Israel's unfaithfulness.",
+                                },
+                                {
+                                    name: "Joel",
+                                    desc: "Prophecy about a locust plague, the Day of the Lord, and future outpouring of the Spirit.",
+                                },
+                                {
+                                    name: "Amos",
+                                    desc: "Prophecy condemning social injustice and moral decay in Israel and surrounding nations.",
+                                },
+                                {
+                                    name: "Obadiah",
+                                    desc: "Prophecy of judgment against Edom for their pride and mistreatment of Judah.",
+                                },
+                                {
+                                    name: "Jonah",
+                                    desc: "Narrative of a prophet's reluctance to obey God's command to preach to Nineveh.",
+                                },
+                                {
+                                    name: "Micah",
+                                    desc: "Prophecy denouncing injustice and idolatry, and foretelling the Messiah's birthplace.",
+                                },
+                                {
+                                    name: "Nahum",
+                                    desc: "Prophecy foretelling the destruction of Nineveh, Assyria's capital.",
+                                },
+                                {
+                                    name: "Habakkuk",
+                                    desc: "A prophet's dialogue with God about divine justice and the problem of evil.",
+                                },
+                                {
+                                    name: "Zephaniah",
+                                    desc: "Prophecy about the coming Day of the Lord and the restoration of a remnant.",
+                                },
+                                {
+                                    name: "Haggai",
+                                    desc: "Prophecy urging the returned exiles to rebuild the temple.",
+                                },
+                                {
+                                    name: "Zechariah",
+                                    desc: "Prophecy encouraging temple rebuilding and offering visions of God's future plans.",
+                                },
+                                {
+                                    name: "Malachi",
+                                    desc: "Prophecy rebuking Israel for spiritual apathy and anticipating John the Baptist and Messiah.",
+                                },
+                            ],
+                        },
+                    },
+                    nt: {
+                        name: "New Testament",
+                        genres: {
+                            Gospels: [
+                                {
+                                    name: "Matthew",
+                                    desc: "Presents Jesus as the Messiah, the King of Israel, fulfilling Old Testament prophecy.",
+                                },
+                                {
+                                    name: "Mark",
+                                    desc: "Presents Jesus as the suffering servant, emphasizing his actions and miracles.",
+                                },
+                                {
+                                    name: "Luke",
+                                    desc: "Presents Jesus as the Son of Man, emphasizing his humanity, compassion, and universal salvation.",
+                                },
+                                {
+                                    name: "John",
+                                    desc: "Presents Jesus as the Son of God, emphasizing his divine nature and eternal life.",
+                                },
+                            ],
+                            History: [
+                                {
+                                    name: "Acts",
+                                    desc: "Chronicles the birth and expansion of the early Christian church, guided by the Holy Spirit.",
+                                },
+                            ],
+                            "Pauline Epistles": [
+                                {
+                                    name: "Romans",
+                                    desc: "A foundational theological treatise on salvation by grace through faith.",
+                                },
+                                {
+                                    name: "1 Corinthians",
+                                    desc: "Addresses divisions, immorality, and various issues within the Corinthian church.",
+                                },
+                                {
+                                    name: "2 Corinthians",
+                                    desc: "Paul's defense of his apostleship and further exhortations to the Corinthians.",
+                                },
+                                {
+                                    name: "Galatians",
+                                    desc: "Defends salvation by faith alone, apart from the Mosaic Law.",
+                                },
+                                {
+                                    name: "Ephesians",
+                                    desc: "Explores the unity of believers in Christ and practical Christian living.",
+                                },
+                                {
+                                    name: "Philippians",
+                                    desc: "A letter of joy and encouragement, emphasizing humility and perseverance.",
+                                },
+                                {
+                                    name: "Colossians",
+                                    desc: "Counters false teaching by emphasizing the supremacy and sufficiency of Christ.",
+                                },
+                                {
+                                    name: "1 Thessalonians",
+                                    desc: "Encouragement and instruction regarding Christian conduct and the return of Christ.",
+                                },
+                                {
+                                    name: "2 Thessalonians",
+                                    desc: "Further clarification on the Day of the Lord and warnings against idleness.",
+                                },
+                                {
+                                    name: "1 Timothy",
+                                    desc: "Instructions for church leadership, sound doctrine, and orderly worship.",
+                                },
+                                {
+                                    name: "2 Timothy",
+                                    desc: "Paul's final exhortations to Timothy, emphasizing faithfulness in ministry.",
+                                },
+                                {
+                                    name: "Titus",
+                                    desc: "Instructions for establishing leadership and promoting sound doctrine in churches on Crete.",
+                                },
+                                {
+                                    name: "Philemon",
+                                    desc: "Paul's appeal to Philemon to receive his runaway slave Onesimus as a brother in Christ.",
+                                },
+                                {
+                                    name: "Hebrews",
+                                    desc: "Argues for the superiority of Christ over Old Testament figures and institutions.",
+                                },
+                            ],
+                            "General Epistles": [
+                                {
+                                    name: "James",
+                                    desc: "Emphasizes practical faith, good works, and living out Christian principles.",
+                                },
+                                {
+                                    name: "1 Peter",
+                                    desc: "Encouragement for believers facing persecution and instruction on holy living.",
+                                },
+                                {
+                                    name: "2 Peter",
+                                    desc: "Warnings against false teachers and exhortations to grow in knowledge of Christ.",
+                                },
+                                {
+                                    name: "1 John",
+                                    desc: "Affirms the reality of Christ, the importance of love, and assurance of salvation.",
+                                },
+                                {
+                                    name: "2 John",
+                                    desc: "A brief letter warning against false teachers and emphasizing truth and love.",
+                                },
+                                {
+                                    name: "3 John",
+                                    desc: "A commendation of Gaius for his hospitality and support of missionaries.",
+                                },
+                                {
+                                    name: "Jude",
+                                    desc: "A short letter warning against apostasy and urging believers to contend for the faith.",
+                                },
+                            ],
+                            Apocalyptic: [
+                                {
+                                    name: "Revelation",
+                                    desc: "Apocalyptic visions of the end times, the triumph of Christ, and the new heaven and earth.",
+                                },
+                            ],
+                        },
+                    },
+                    apocrypha: {
+                        name: "Apocrypha",
+                        genres: {
+                            "Historical Narratives": [
+                                {
+                                    name: "Tobit",
+                                    desc: "A story of a righteous man, his family, and divine intervention through the angel Raphael.",
+                                },
+                                {
+                                    name: "Judith",
+                                    desc: "A narrative about a brave Jewish widow who saves her people from an invading army.",
+                                },
+                                {
+                                    name: "1 Maccabees",
+                                    desc: "Chronicles the history of the Maccabean revolt against Hellenistic rule.",
+                                },
+                                {
+                                    name: "2 Maccabees",
+                                    desc: "Another account of the Maccabean revolt, focusing on religious persecution and martyrdom.",
+                                },
+                            ],
+                            "Wisdom & Didactic": [
+                                {
+                                    name: "Wisdom of Solomon",
+                                    desc: "A philosophical work praising wisdom and righteousness, contrasting them with ungodliness.",
+                                },
+                                {
+                                    name: "Sirach (Ecclesiasticus)",
+                                    desc: "A collection of ethical teachings, proverbs, and reflections on various aspects of life and faith.",
+                                },
+                            ],
+                            "Narrative Additions": [
+                                {
+                                    name: "Additions to Esther",
+                                    desc: "Several passages added to the Book of Esther, including prayers and a dream.",
+                                },
+                                {
+                                    name: "Susanna",
+                                    desc: "A story of a virtuous woman falsely accused and saved by the wisdom of Daniel.",
+                                },
+                                {
+                                    name: "Bel and the Dragon",
+                                    desc: "Two stories in which Daniel exposes the idolatry of Babylonian worship.",
+                                },
+                            ],
+                            "Pseudepigrapha & Apocalyptic": [
+                                {
+                                    name: "Enoch",
+                                    desc: "A collection of ancient Jewish apocalyptic texts attributed to the biblical figure Enoch.",
+                                },
+                            ],
+                        },
+                    },
+                    videos: {
+                        name: "Videos",
+                        genres: {
+                            "What is the Bible?": [
+                                {
+                                    name: "What is the Bible?",
+                                    url: "https://www.youtube.com/embed/ak06MSETeo4?si=UoccnQFFYkSVXijk",
+                                },
+                            ],
+                            "Writing Styles in the Bible": [
+                                {
+                                    name: "Writing Styles in the Bible",
+                                    url: "https://www.youtube.com/embed/oUXJ8Owes8E?si=ITQK-sGQOSOLK2bv",
+                                },
+                            ],
+                            "Unique Literature": [
+                                {
+                                    name: "Unique Literature",
+                                    url: "https://www.youtube.com/embed/VhmlJBUIoLk?si=7K1zDtTGzUMc9_ng",
+                                },
+                            ],
+                        },
+                    },
+                },
+                sacraments: {
+                    name: "Sacraments",
+                    subTabs: [
+                        "baptism",
+                        "eucharist",
+                        "confirmation",
+                        "reconciliation",
+                        "anointing",
+                        "holyorders",
+                        "matrimony",
+                    ],
+                    baptism: {
+                        title: "Baptism",
+                        description:
+                            "Baptism is a Christian rite of admission and adoption, almost invariably accompanied by the use of water, into the Christian Church generally and also thereby into a particular church.",
+                        denominations: {
+                            Catholic:
+                                "Viewed as a sacrament of initiation, necessary for salvation, cleansing from original sin, and incorporation into Christ and the Church. Administered to infants and adults by pouring or immersion. It imprints an indelible spiritual mark.",
+                            Orthodox:
+                                "Viewed as a sacrament of initiation, regeneration, and cleansing from sin. Performed by triple immersion. Administered to infants. Also imprints an indelible spiritual mark.",
+                            Lutheran:
+                                "Viewed as a sacrament commanded by Christ, a means of grace where God works forgiveness of sins and delivers from death and the devil. Administered to infants by sprinkling, pouring, or immersion.",
+                            Baptist:
+                                "Viewed as an ordinance, a public declaration of faith in Christ, symbolizing death to sin and new life. Believer's baptism (immersion) only, for those who have made a conscious decision for Christ. Not considered salvific.",
+                            Methodist:
+                                "Viewed as a sacrament that initiates one into the Christian community and signifies new birth. Both infant and believer's baptism (by sprinkling, pouring, or immersion) are practiced, recognizing God's grace precedes human response.",
+                        },
+                    },
+                    eucharist: {
+                        title: "Eucharist (Communion)",
+                        description:
+                            "The Eucharist, also known as Holy Communion, is a Christian rite that commemorates the Last Supper of Jesus Christ, during which he shared bread and wine with his disciples.",
+                        denominations: {
+                            Catholic:
+                                "Believes in the Real Presence of Christ (transubstantiation), where the bread and wine truly become the body and blood of Christ. Central to Catholic worship.",
+                            Orthodox:
+                                "Believes in the Real Presence of Christ (mystery), where the bread and wine become the body and blood of Christ through the Holy Spirit. Central to Orthodox worship.",
+                            Lutheran:
+                                "Believes in the Real Presence of Christ (sacramental union), where Christ's body and blood are truly present 'in, with, and under' the bread and wine. Not transubstantiation.",
+                            Baptist:
+                                "Viewed as an ordinance, a symbolic remembrance of Christ's death and resurrection. The bread and wine are symbols only, not the literal body and blood of Christ. Open communion is common.",
+                            Methodist:
+                                "Viewed as a sacrament where Christ is truly present, though not necessarily in a physical or transubstantial way. It is a means of grace, a spiritual meal, and a remembrance of Christ's sacrifice. Open communion is common.",
+                        },
+                    },
+                    confirmation: {
+                        title: "Confirmation",
+                        description:
+                            "Confirmation is a Christian sacrament or rite of passage that signifies the strengthening of one's faith and the reception of the Holy Spirit.",
+                        denominations: {
+                            Catholic:
+                                "A sacrament that completes baptismal grace, strengthening the baptized with the Holy Spirit for Christian witness. Administered by a bishop, typically to adolescents.",
+                            Orthodox:
+                                "Called Chrismation, administered immediately after baptism (even for infants) using holy oil, signifying the gift of the Holy Spirit. It is a mystery, not a separate sacrament from Baptism in practice.",
+                            Lutheran:
+                                "A rite of passage, not a sacrament, where baptized individuals publicly affirm their faith. It is an educational and pastoral practice, not a means of grace in itself.",
+                            Baptist:
+                                "Not practiced as a sacrament or ordinance. Believers make a public profession of faith through baptism, and the Holy Spirit is received at conversion.",
+                            Methodist:
+                                "A rite of passage, not a sacrament, where individuals affirm their baptismal vows and commit to Christian discipleship. It is a public declaration of faith and a spiritual growth milestone.",
+                        },
+                    },
+                    reconciliation: {
+                        title: "Reconciliation (Confession)",
+                        description:
+                            "The Sacrament of Reconciliation (also known as Penance or Confession) is a Christian sacrament through which sins committed after baptism are forgiven.",
+                        denominations: {
+                            Catholic:
+                                "A sacrament through which sins committed after baptism are forgiven by God through the absolution of a priest. Essential for forgiveness of mortal sins.",
+                            Orthodox:
+                                "A mystery through which sins are confessed to a priest (spiritual father) and forgiveness is granted by God. Emphasizes spiritual guidance and healing.",
+                            Lutheran:
+                                "Private confession and absolution are practiced, though not considered a sacrament in the same way as Baptism and Eucharist. It offers comfort and assurance of forgiveness.",
+                            Baptist:
+                                "Confession of sins is made directly to God. There is no sacramental confession to a priest or pastor. Forgiveness is received directly from God through Christ.",
+                            Methodist:
+                                "Confession of sins is primarily made directly to God. While private confession to a pastor is available, it is not considered a sacrament or a requirement for forgiveness.",
+                        },
+                    },
+                    anointing: {
+                        title: "Anointing of the Sick",
+                        description:
+                            "The Anointing of the Sick is a sacrament of healing given to those who are ill or elderly, providing spiritual comfort, strength, and sometimes physical healing.",
+                        denominations: {
+                            Catholic:
+                                "A sacrament for the seriously ill, elderly, or those facing surgery, providing spiritual and sometimes physical healing, comfort, and preparation for death. Administered by a priest.",
+                            Orthodox:
+                                "Called Holy Unction, a mystery for healing of soul and body, administered by multiple priests (ideally seven) to the sick. Focuses on spiritual healing and forgiveness of sins.",
+                            Lutheran:
+                                "Not a sacrament. Some Lutheran traditions practice anointing with oil for comfort and prayer for healing, but it is not considered a means of grace in the sacramental sense.",
+                            Baptist:
+                                "Not a sacrament or ordinance. Prayer for the sick and anointing with oil (as described in James 5) may be practiced as an act of faith and prayer, not as a salvific rite.",
+                            Methodist:
+                                "Not a sacrament. Anointing with oil and prayer for healing are practiced as pastoral ministries, offering comfort and spiritual strength to the sick, often based on James 5.",
+                        },
+                    },
+                    holyorders: {
+                        title: "Holy Orders",
+                        description:
+                            "Holy Orders is the sacrament through which men are ordained as deacons, priests, or bishops, dedicating their lives to serving God and the Church.",
+                        denominations: {
+                            Catholic:
+                                "A sacrament that ordains baptized men into the episcopate (bishops), presbyterate (priests), or diaconate (deacons), conferring a sacred power for ministry. Celibacy is required for priests in the Latin Rite.",
+                            Orthodox:
+                                "A mystery that ordains baptized men into the clergy (deacons, priests, bishops) for sacred ministry. Married men can be ordained as deacons and priests, but bishops must be celibate.",
+                            Lutheran:
+                                "Not a sacrament. Ordination is a public rite recognizing and commissioning individuals for pastoral ministry, but it is not seen as conferring an indelible spiritual mark or a unique priestly status.",
+                            Baptist:
+                                "Not a sacrament or ordinance. Ordination is a recognition by the local church of an individual's call to ministry (e.g., pastor, deacon), not a conferral of special grace or authority from a hierarchical structure.",
+                            Methodist:
+                                "Not a sacrament. Ordination is a process of discerning and affirming a call to ministry (deacon, elder) and is a public commissioning for service within the church. It is not seen as conferring an indelible mark.",
+                        },
+                    },
+                    matrimony: {
+                        title: "Matrimony",
+                        description:
+                            "Matrimony (or Holy Matrimony) is a sacrament in which a baptized man and a baptized woman are united in a lifelong covenant of love, signifying the union of Christ and the Church.",
+                        denominations: {
+                            Catholic:
+                                "A sacrament, a lifelong covenant between baptized man and woman, indissoluble and open to procreation. The spouses themselves are the ministers of the sacrament.",
+                            Orthodox:
+                                "A mystery, a sacred union blessed by God through the Church, symbolizing the spiritual union of Christ and the Church. Divorce is permitted under strict conditions, but remarriage is a pastoral concession.",
+                            Lutheran:
+                                "Not a sacrament, but a divinely instituted order of creation. Marriage is a sacred covenant, blessed by God, providing companionship and a context for raising children. Divorce is recognized in certain cases.",
+                            Baptist:
+                                "Not a sacrament or ordinance. Marriage is a sacred covenant between a man and a woman, instituted by God, to be honored by all. Divorce is generally discouraged but acknowledged in cases of adultery or desertion.",
+                            Methodist:
+                                "Not a sacrament. Marriage is a sacred covenant between a man and a woman, instituted by God, intended for life. It is a public and lifelong commitment blessed by the church.",
+                        },
+                    },
+                },
+            };
+
+            let currentMainTab = "bible"; // 'bible' or 'sacraments'
+            let currentSubTab = "ot"; // 'ot', 'nt', 'apocrypha', 'videos', or sacrament keys
+            let currentSacramentDenominationFilter = "All"; // For sacraments tab
+            let charts = { ot: null, nt: null, apocrypha: null };
+
+            // Main Tab Elements
+            const bibleMainTab = document.getElementById("bible-main-tab");
+            const sacramentsMainTab = document.getElementById(
+                "sacraments-main-tab",
+            );
+            const bibleContentWrapper = document.getElementById(
+                "bible-content-wrapper",
+            );
+            const sacramentsContentWrapper = document.getElementById(
+                "sacraments-content-wrapper",
+            );
+
+            // Bible Sub-tab Elements
+            const otTab = document.getElementById("ot-tab");
+            const ntTab = document.getElementById("nt-tab");
+            const apocryphaTab = document.getElementById("apocrypha-tab");
+            const videosTab = document.getElementById("videos-tab");
+            const contentOt = document.getElementById("content-ot");
+            const contentNt = document.getElementById("content-nt");
+            const contentApocrypha =
+                document.getElementById("content-apocrypha");
+            const contentVideos = document.getElementById("content-videos");
+            const filtersOtContainer = document.getElementById("filters-ot");
+            const booksOtContainer = document.getElementById("books-ot");
+            const filtersNtContainer = document.getElementById("filters-nt");
+            const booksNtContainer = document.getElementById("books-nt");
+            const filtersApocryphaContainer =
+                document.getElementById("filters-apocrypha");
+            const booksApocryphaContainer =
+                document.getElementById("books-apocrypha");
+            const filtersVideosContainer =
+                document.getElementById("filters-videos");
+            const videoPlayer = document.getElementById("video-player");
+
+            // Sacraments Tab Elements
+            const sacramentSubTabsContainer =
+                document.getElementById("sacrament-sub-tabs");
+            const filtersSacramentsContainer =
+                document.getElementById("filters-sacraments");
+            const sacramentDetailsContainer = document.getElementById(
+                "sacrament-details-container",
+            );
+            const sacramentDetailTitle = document.getElementById(
+                "sacrament-detail-title",
+            );
+            const sacramentGeneralDescription = document.getElementById(
+                "sacrament-general-description",
+            );
+            const sacramentDenominationInfo = document.getElementById(
+                "sacrament-denomination-info",
+            );
+
+            // Modal Elements
+            const modal = document.getElementById("modal");
+            const modalContent = document.getElementById("modal-content");
+            const modalTitle = document.getElementById("modal-title");
+            const modalDescription =
+                document.getElementById("modal-description");
+            const modalClose = document.getElementById("modal-close");
+
+            function openModal(book) {
+                modalTitle.textContent = book.name;
+                modalDescription.textContent = book.desc;
+                modal.classList.remove("hidden");
+                setTimeout(() => {
+                    modal.classList.remove("opacity-0");
+                    modalContent.classList.remove("scale-95");
+                }, 10);
+            }
+
+            function closeModal() {
+                modal.classList.add("opacity-0");
+                modalContent.classList.add("scale-95");
+                setTimeout(() => modal.classList.add("hidden"), 300);
+            }
+
+            modalClose.addEventListener("click", closeModal);
+            modal.addEventListener("click", (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+
+            function createBookCard(book) {
+                const card = document.createElement("button");
+                card.className =
+                    "book-card bg-white p-4 rounded-lg text-center cursor-pointer hover:bg-amber-50";
+                card.innerHTML = `<h4 class="font-semibold text-gray-800">${book.name}</h4>`;
+                card.addEventListener("click", () => openModal(book));
+                return card;
+            }
+
+            function renderBooks(testament, filter) {
+                const container = {
+                    ot: booksOtContainer,
+                    nt: booksNtContainer,
+                    apocrypha: booksApocryphaContainer,
+                }[testament];
+
+                if (!container) return; // Probably won't happen :3
+
+                const data = appData.bible[testament].genres;
+                container.innerHTML = "";
+
+                let booksToShow = [];
+                if (filter === "All") {
+                    Object.values(data).forEach((genreBooks) => {
+                        booksToShow.push(...genreBooks);
+                    });
+                } else {
+                    booksToShow = data[filter];
+                }
+
+                booksToShow.forEach((book) => {
+                    container.appendChild(createBookCard(book));
+                });
+            }
+
+            function renderVideo(videoUrl) {
+                videoPlayer.src = videoUrl;
+            }
+
+            function renderSacramentDetails(sacramentKey, denominationFilter) {
+                const sacramentData = appData.sacraments[sacramentKey];
+                if (!sacramentData) return;
+
+                sacramentDetailTitle.textContent = sacramentData.title;
+                sacramentGeneralDescription.textContent =
+                    sacramentData.description;
+                sacramentDenominationInfo.innerHTML = "";
+
+                if (denominationFilter === "All") {
+                    for (const denom in sacramentData.denominations) {
+                        const p = document.createElement("p");
+                        p.className = "mb-2";
+                        p.innerHTML = `<strong class="text-[#A38D7B]">${denom}:</strong> ${sacramentData.denominations[denom]}`;
+                        sacramentDenominationInfo.appendChild(p);
+                    }
+                } else {
+                    const p = document.createElement("p");
+                    p.className = "mb-2";
+                    p.innerHTML = `<strong class="text-[#A38D7B]">${denominationFilter}:</strong> ${sacramentData.denominations[denominationFilter] || "Information not available for this denomination."}`;
+                    sacramentDenominationInfo.appendChild(p);
+                }
+            }
+
+            function createFilterButton(mainTab, subTab, genreOrDenomination) {
+                const button = document.createElement("button");
+                button.className =
+                    "filter-inactive py-2 px-4 rounded-full text-sm font-semibold transition-all duration-300";
+                button.textContent = genreOrDenomination;
+                button.dataset.filter = genreOrDenomination;
+                button.addEventListener("click", () => {
+                    if (mainTab === "bible") {
+                        currentFilter = genreOrDenomination;
+                        updateFilters(mainTab, subTab);
+                        if (subTab === "videos") {
+                            const videoInfo =
+                                appData.bible.videos.genres[
+                                    genreOrDenomination
+                                ][0];
+                            renderVideo(videoInfo.url);
+                        } else {
+                            renderBooks(subTab, genreOrDenomination);
+                        }
+                    } else if (mainTab === "sacraments") {
+                        currentSacramentDenominationFilter =
+                            genreOrDenomination;
+                        updateFilters(mainTab, subTab);
+                        renderSacramentDetails(subTab, genreOrDenomination);
+                    }
+                });
+                return button;
+            }
+
+            function updateFilters(mainTab, subTab) {
+                let container;
+                let currentActiveFilter;
+
+                if (mainTab === "bible") {
+                    container = {
+                        ot: filtersOtContainer,
+                        nt: filtersNtContainer,
+                        apocrypha: filtersApocryphaContainer,
+                        videos: filtersVideosContainer,
+                    }[subTab];
+                    currentActiveFilter = currentFilter;
+                } else if (mainTab === "sacraments") {
+                    container = filtersSacramentsContainer;
+                    currentActiveFilter = currentSacramentDenominationFilter;
+                }
+
+                if (!container) return;
+
+                container.querySelectorAll("button").forEach((btn) => {
+                    if (btn.dataset.filter === currentActiveFilter) {
+                        btn.classList.remove("filter-inactive");
+                        btn.classList.add("filter-active");
+                    } else {
+                        btn.classList.remove("filter-active");
+                        btn.classList.add("filter-inactive");
+                    }
+                });
+            }
+
+            function renderFilters(mainTab, subTab) {
+                let container;
+                let categories;
+
+                if (mainTab === "bible") {
+                    container = {
+                        ot: filtersOtContainer,
+                        nt: filtersNtContainer,
+                        apocrypha: filtersApocryphaContainer,
+                        videos: filtersVideosContainer,
+                    }[subTab];
+                    categories = Object.keys(appData.bible[subTab].genres);
+                    currentFilter = "All";
+                } else if (mainTab === "sacraments") {
+                    container = filtersSacramentsContainer;
+                    categories = Object.keys(
+                        appData.sacraments[subTab].denominations,
+                    );
+                    currentSacramentDenominationFilter = "All";
+                }
+
+                if (!container) return;
+
+                container.innerHTML = "";
+
+                if (mainTab === "bible" && subTab !== "videos") {
+                    const allButton = createFilterButton(
+                        mainTab,
+                        subTab,
+                        "All",
+                    );
+                    container.appendChild(allButton);
+                } else if (mainTab === "sacraments") {
+                    const allButton = createFilterButton(
+                        mainTab,
+                        subTab,
+                        "All",
+                    );
+                    container.appendChild(allButton);
+                }
+
+                categories.forEach((cat) => {
+                    container.appendChild(
+                        createFilterButton(mainTab, subTab, cat),
+                    );
+                });
+
+                updateFilters(mainTab, subTab);
+            }
+
+            function updateTotalBooksDisplay(
+                testament,
+                value = null,
+                label = null,
+            ) {
+                if (currentMainTab !== "bible" || testament === "videos") {
+                    return;
+                }
+
+                const activeContentDiv = document.getElementById(
+                    `content-${testament}`,
+                );
+                const totalBooksElement = activeContentDiv
+                    ? activeContentDiv.querySelector(".total-books-display")
+                    : null;
+
+                if (!totalBooksElement) {
+                    console.error(
+                        `Element with class 'total-books-display' not found for testament: ${testament}.`,
+                    );
+                    return;
+                }
+
+                if (value !== null && label !== null) {
+                    totalBooksElement.querySelector(".number").textContent =
+                        value;
+                    totalBooksElement.querySelector(".label").textContent =
+                        label;
+                } else {
+                    let total = 0;
+                    Object.values(appData.bible[testament].genres).forEach(
+                        (genreBooks) => {
+                            total += genreBooks.length;
+                        },
+                    );
+                    totalBooksElement.querySelector(".number").textContent =
+                        total;
+                    totalBooksElement.querySelector(".label").textContent =
+                        "Total Books";
+                }
+            }
+
+            function createChart(testament) {
+                if (currentMainTab !== "bible" || testament === "videos") {
+                    if (charts[testament]) {
+                        charts[testament].destroy();
+                        charts[testament] = null;
+                    }
+                    return;
+                }
+
+                if (charts[testament]) {
+                    charts[testament].destroy();
+                    charts[testament] = null;
+                }
+
+                const ctx = document
+                    .getElementById(`chart-${testament}`)
+                    .getContext("2d");
+                const data = appData.bible[testament].genres;
+                const labels = Object.keys(data);
+                const values = labels.map((label) => data[label].length);
+                const offsets = new Array(labels.length).fill(0);
+
+                charts[testament] = new Chart(ctx, {
+                    type: "doughnut",
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: "Number of Books",
+                                data: values,
+                                backgroundColor: [
+                                    "#A38D7B",
+                                    "#C3B3A3",
+                                    "#D4C6B9",
+                                    "#E5D9CF",
+                                    "#F6EDE4",
+                                    "#B8A89A",
+                                    "#D9CFC5",
+                                    "#A38D7B",
+                                    "#C3B3A3",
+                                ],
+                                borderColor: "#FDFBF8",
+                                borderWidth: 4,
+                                hoverOffset: 8,
+                                offset: offsets,
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: "60%",
+                        animation: {
+                            animateRotate: true,
+                            animateScale: true,
+                            duration: 1000,
+                        },
+                        onClick: (e, elements) => {
+                            const currentChart = charts[testament];
+
+                            if (
+                                currentChart.activeSegmentIndex !== undefined &&
+                                currentChart.activeSegmentIndex !== null
+                            ) {
+                                currentChart.data.datasets[0].offset[
+                                    currentChart.activeSegmentIndex
+                                ] = 0;
+                            }
+
+                            if (elements.length > 0) {
+                                const clickedIndex = elements[0].index;
+                                const segmentValue =
+                                    currentChart.data.datasets[0].data[
+                                        clickedIndex
+                                    ];
+                                const segmentLabel =
+                                    currentChart.data.labels[clickedIndex];
+
+                                currentChart.data.datasets[0].offset[
+                                    clickedIndex
+                                ] = 20;
+                                currentChart.activeSegmentIndex = clickedIndex;
+
+                                updateTotalBooksDisplay(
+                                    testament,
+                                    segmentValue,
+                                    segmentLabel,
+                                );
+                            } else {
+                                currentChart.activeSegmentIndex = null;
+                                updateTotalBooksDisplay(testament);
+                            }
+                            currentChart.update();
+                        },
+                        plugins: {
+                            legend: {
+                                position: "bottom",
+                                labels: {
+                                    font: {
+                                        family: "'Inter', sans-serif",
+                                        size: 12,
+                                    },
+                                    color: "#4A4A4A",
+                                    boxWidth: 15,
+                                    padding: 20,
+                                },
+                            },
+                            tooltip: {
+                                bodyFont: {
+                                    family: "'Inter', sans-serif",
+                                },
+                                titleFont: {
+                                    family: "'Inter', sans-serif",
+                                },
+                                callbacks: {
+                                    label: function (context) {
+                                        let label = context.dataset.label || "";
+                                        if (label) {
+                                            label += ": ";
+                                        }
+                                        if (context.parsed !== null) {
+                                            label += context.parsed + " books";
+                                        }
+                                        return label;
+                                    },
+                                },
+                            },
+                        },
+                    },
+                });
+                updateTotalBooksDisplay(testament);
+            }
+
+            function createSacramentSubTabButton(sacramentKey) {
+                const button = document.createElement("button");
+                button.className =
+                    "w-auto p-3 rounded-full text-center transition-colors duration-300 text-sm md:text-base";
+                button.textContent = appData.sacraments[sacramentKey].title;
+                button.dataset.sacrament = sacramentKey;
+                button.addEventListener("click", () =>
+                    switchSubTab("sacraments", sacramentKey),
+                );
+                return button;
+            }
+
+            function renderSacramentSubTabs() {
+                sacramentSubTabsContainer.innerHTML = "";
+                appData.sacraments.subTabs.forEach((sacramentKey) => {
+                    sacramentSubTabsContainer.appendChild(
+                        createSacramentSubTabButton(sacramentKey),
+                    );
+                });
+            }
+
+            // Handles switching between sub-tabs (OT, NT, Apocrypha, Videos, or Sacraments)
+            function switchSubTab(mainTab, subTab) {
+                currentSubTab = subTab;
+                currentFilter = "All";
+                currentSacramentDenominationFilter = "All";
+
+                // Hide all Bible content divs
+                contentOt.classList.add("hidden");
+                contentNt.classList.add("hidden");
+                contentApocrypha.classList.add("hidden");
+                contentVideos.classList.add("hidden");
+
+                // Deactivate all Bible sub-tab buttons
+                otTab.classList.remove("tab-active");
+                otTab.classList.add("tab-inactive");
+                ntTab.classList.remove("tab-active");
+                ntTab.classList.add("tab-inactive");
+                apocryphaTab.classList.remove("tab-active");
+                apocryphaTab.classList.add("tab-inactive");
+                videosTab.classList.remove("tab-active");
+                videosTab.classList.add("tab-inactive");
+
+                // Deactivate all Sacrament sub-tab buttons
+                sacramentSubTabsContainer
+                    .querySelectorAll("button")
+                    .forEach((btn) => {
+                        btn.classList.remove("tab-active");
+                        btn.classList.add("tab-inactive");
+                    });
+
+                // Show relevant content and activate relevant sub-tab
+                if (mainTab === "bible") {
+                    const activeSubTabContent = document.getElementById(
+                        `content-${subTab}`,
+                    );
+                    if (activeSubTabContent) {
+                        activeSubTabContent.classList.remove("hidden");
+                    }
+                    const activeSubTabButton = document.getElementById(
+                        `${subTab}-tab`,
+                    );
+                    if (activeSubTabButton) {
+                        activeSubTabButton.classList.add("tab-active");
+                        activeSubTabButton.classList.remove("tab-inactive");
+                    }
+
+                    renderFilters(mainTab, subTab);
+                    if (subTab === "videos") {
+                        const firstVideoCategory = Object.keys(
+                            appData.bible.videos.genres,
+                        )[0];
+                        if (firstVideoCategory) {
+                            const firstVideoInfo =
+                                appData.bible.videos.genres[
+                                    firstVideoCategory
+                                ][0];
+                            renderVideo(firstVideoInfo.url);
+                            currentFilter = firstVideoCategory;
+                            updateFilters(mainTab, subTab);
+                        }
+                    } else {
+                        renderBooks(subTab, "All");
+                    }
+                    createChart(subTab);
+                } else if (mainTab === "sacraments") {
+                    sacramentDetailsContainer.classList.remove("hidden");
+                    const activeSacramentButton =
+                        sacramentSubTabsContainer.querySelector(
+                            `button[data-sacrament="${subTab}"]`,
+                        );
+                    if (activeSacramentButton) {
+                        activeSacramentButton.classList.add("tab-active");
+                        activeSacramentButton.classList.remove("tab-inactive");
+                    }
+                    renderFilters(mainTab, subTab);
+                    renderSacramentDetails(subTab, "All");
+                }
+            }
+
+            // Handles switching between main tabs (Bible, Sacraments)
+            function switchMainTab(mainTab) {
+                currentMainTab = mainTab;
+
+                bibleMainTab.classList.remove("tab-active");
+                bibleMainTab.classList.add("tab-inactive");
+                sacramentsMainTab.classList.remove("tab-active");
+                sacramentsMainTab.classList.add("tab-inactive");
+
+                bibleContentWrapper.classList.add("hidden");
+                sacramentsContentWrapper.classList.add("hidden");
+
+                if (mainTab === "bible") {
+                    bibleMainTab.classList.add("tab-active");
+                    bibleMainTab.classList.remove("tab-inactive");
+                    bibleContentWrapper.classList.remove("hidden");
+                    switchSubTab(currentMainTab, "ot");
+                } else if (mainTab === "sacraments") {
+                    sacramentsMainTab.classList.add("tab-active");
+                    sacramentsMainTab.classList.remove("tab-inactive");
+                    sacramentsContentWrapper.classList.remove("hidden");
+                    renderSacramentSubTabs();
+                    switchSubTab(currentMainTab, "baptism");
+                }
+            }
+
+            // Event Listeners for Main Tabs
+            bibleMainTab.addEventListener("click", () =>
+                switchMainTab("bible"),
+            );
+            sacramentsMainTab.addEventListener("click", () =>
+                switchMainTab("sacraments"),
+            );
+
+            // Event Listeners for Bible Sub-tabs
+            otTab.addEventListener("click", () => switchSubTab("bible", "ot"));
+            ntTab.addEventListener("click", () => switchSubTab("bible", "nt"));
+            apocryphaTab.addEventListener("click", () =>
+                switchSubTab("bible", "apocrypha"),
+            );
+            videosTab.addEventListener("click", () =>
+                switchSubTab("bible", "videos"),
+            );
+
+            // Initial load
+            switchMainTab("bible");
+        </script>
+    </body>
+</html>
