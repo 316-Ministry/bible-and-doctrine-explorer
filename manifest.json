@@ -1,0 +1,21 @@
+{
+  "name": "Bible Books & Divisions Explorer",
+  "short_name": "Bible Overview Explorer",
+  "description": "An interactive tool to explore Bible book divisions & Christian doctrines.",
+  "start_url": "/bible-and-doctrine-explorer/",
+  "display": "standalone",
+  "background_color": "#FDFBF8",
+  "theme_color": "#A38D7B",
+  "icons": [
+    {
+      "src": "/bible-and-doctrine-explorer/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/bible-and-doctrine-explorer/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
