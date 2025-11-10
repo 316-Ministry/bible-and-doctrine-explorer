@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Broad Denomination Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            background-color: #f4f4f9;
+            padding-top: 50px;
+        }
+      
+        .container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+      
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 1.8em;
+        }
+      
+        #question-display {
+            font-size: 1.4em;
+            margin-bottom: 30px;
+            min-height: 50px;
+        }
+      
+        .option-button {
+            display: block;
+            width: 100%;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+      
+        .option-button:hover {
+            background-color: #45a049;
+        }
+      
+        .answer-box {
+            background-color: #e8f5e9;
+            border: 2px solid #4CAF50;
+            padding: 20px;
+            border-radius: 5px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+      
+        #reset-button {
+            background-color: #f44336;
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Broad Denomination Quiz</h1>
+        
+        <div id="quiz-area">
+            <p id="question-display">Loading question...</p>
+            <div id="options-container">
+                </div>
+        </div>
+
+        <div id="answer-area" style="display: none;">
+            <div class="answer-box">
+                <p>Answer:</p>
+                <p id="final-answer"></p>
+            </div>
+            <button id="reset-button" class="option-button">Start Over</button>
+        </div>
+    </div>
+
+    <script>
+        const decisionTreeData = {
+            "start": 1,
+            "nodes": {
+                "1": {
+                    "id": 1,
+                    "question": "Does the Bible have MORE authority than the Church?",
+                    "option1_text": "Yes.",
+                    "option1_next": 2,
+                    "option2_text": "No.",
+                    "option2_next": 3
+                },
+                "2": {
+                    "id": 2,
+                    "question": "Should infants be baptised?",
+                    "option1_text": "Yes.",
+                    "option1_next": 4,
+                    "option2_text": "No.",
+                    "option2_next": 5
+                },
+                "3": {
+                    "id": 3,
+                    "question": "Does The Spirit proceed from The Father and The Son?",
+                    "option1_text": "Yes.",
+                    "option1_next": 6,
+                    "option2_text": "No.",
+                    "option2_next": 7
+                },
+                "4": {
+                    "id": 3,
+                    "question": "Must ALL the Churches still be ruled by a hierarchy of Bishops?",
+                    "option1_text": "Yes.",
+                    "option1_next": "Your positions may align with the Anglican/Episcopal Church",
+                    "option2_text": "No.",
+                    "option2_next": 8
+                },
+                "5": {
+                    "id": 3,
+                    "question": "Does baptism regenerate?",
+                    "option1_text": "Yes.",
+                    "option1_next": "Your positions may align with the Restorationist Church",
+                    "option2_text": "No.",
+                    "option2_next": 9
+                },
+                "6": {
+                    "id": 3,
+                    "question": "Is the Pope infallible?",
+                    "option1_text": "Yes.",
+                    "option1_next": 10,
+                    "option2_text": "No.",
+                    "option2_next": "Your positions may align with the Old Catholic Church"
+                },
+                "7": {
+                    "id": 3,
+                    "question": "Does Jesus have two natures, or one nature that's the union of the two?",
+                    "option1_text": "One.",
+                    "option1_next": "Your positions may align with the Oriental Orthodox Church",
+                    "option2_text": "Two.",
+                    "option2_next": 11
+                },
+                "8": {
+                    "id": 3,
+                    "question": "Should congregations all be autonomous?",
+                    "option1_text": "Yes.",
+                    "option1_next": "Your positions may align with the Congregationalist Church",
+                    "option2_text": "No.",
+                    "option2_next": 12
+                },
+                "9": {
+                    "id": 3,
+                    "question": "Is 'Spirit Baptism' the same as being born again, or something later?",
+                    "option1_text": "Same.",
+                    "option1_next": 13,
+                    "option2_text": "Later.",
+                    "option2_next": "Your positions may align with the Pentecostal Church"
+                },
+                "10": {
+                    "id": 3,
+                    "question": "Is the seat of the Pope vacant?",
+                    "option1_text": "Yes.",
+                    "option1_next": "Your positions may align with the Sedevacantist Church",
+                    "option2_text": "No.",
+                    "option2_next": "Your positions may align with the Roman Catholic Church"
+                },
+                "11": {
+                    "id": 3,
+                    "question": "Is icon veneration necessary for all Christians?",
+                    "option1_text": "Yes.",
+                    "option1_next": 14,
+                    "option2_text": "No.",
+                    "option2_next": "Your positions may align with the Nestorian Church (the Assyrian Orthodox Church of the East)"
+                },
+                "12": {
+                    "id": 3,
+                    "question": "Is salvation based on a free-will choice?",
+                    "option1_text": "Yes.",
+                    "option1_next": 15,
+                    "option2_text": "No.",
+                    "option2_next": 16
+                },
+                "13": {
+                    "id": 3,
+                    "question": "Should Church be more free, or more formal?",
+                    "option1_text": "Free.",
+                    "option1_next": "Your positions may align with the Non-Denominational Church",
+                    "option2_text": "Formal.",
+                    "option2_next": "Your positions may align with the Baptist Church"
+                },
+                "14": {
+                    "id": 3,
+                    "question": "Is the old calendar neccecary?",
+                    "option1_text": "Yes.",
+                    "option1_next": "Your positions may align with the True Orthodox Church",
+                    "option2_text": "No.",
+                    "option2_next": "Your positions may align with the Eastern Orthodox Church"
+                },
+                "15": {
+                    "id": 3,
+                    "question": "Is 'entire sanctification' a second work of grace?",
+                    "option1_text": "Yes.",
+                    "option1_next": "Your positions may align with the Holiness Church",
+                    "option2_text": "No.",
+                    "option2_next": "Your positions may align with the Methodist Church"
+                },
+                "16": {
+                    "id": 3,
+                    "question": "Are Christ's body and blood physically present in Communion?",
+                    "option1_text": "Yes.",
+                    "option1_next": "Your positions may align with the Lutheran Church",
+                    "option2_text": "No.",
+                    "option2_next": "Your positions may align with the Presbyterian/Reformed/Calvinist Church"
+                }
+            }
+        };
+
+        const questionDisplay = document.getElementById('question-display');
+        const optionsContainer = document.getElementById('options-container');
+        const quizArea = document.getElementById('quiz-area');
+        const answerArea = document.getElementById('answer-area');
+        const finalAnswerDisplay = document.getElementById('final-answer');
+        const resetButton = document.getElementById('reset-button');
+
+        let currentQuestionId = decisionTreeData.start;
+
+        function loadQuestion(nodeId) {
+            const node = decisionTreeData.nodes[nodeId];
+
+            questionDisplay.innerHTML = node.question.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            
+            optionsContainer.innerHTML = ''; 
+
+            const btn1 = document.createElement('button');
+            btn1.className = 'option-button';
+            btn1.innerHTML = node.option1_text;
+            btn1.addEventListener('click', () => handleAnswer(node.option1_next));
+            optionsContainer.appendChild(btn1);
+
+            const btn2 = document.createElement('button');
+            btn2.className = 'option-button';
+            btn2.innerHTML = node.option2_text;
+            btn2.addEventListener('click', () => handleAnswer(node.option2_next));
+            optionsContainer.appendChild(btn2);
+        }
+
+        function handleAnswer(nextStep) {
+            if (typeof nextStep === 'number') {
+                currentQuestionId = nextStep;
+                loadQuestion(currentQuestionId);
+            } else {
+                displayAnswer(nextStep);
+            }
+        }
+
+        function displayAnswer(answer) {
+            finalAnswerDisplay.innerHTML = answer.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            
+            quizArea.style.display = 'none';
+            answerArea.style.display = 'block';
+            resetButton.style.display = 'block';
+        }
+
+        function resetQuiz() {
+            currentQuestionId = decisionTreeData.start;
+          
+            quizArea.style.display = 'block';
+            answerArea.style.display = 'none';
+            resetButton.style.display = 'none';
+            loadQuestion(currentQuestionId);
+        }
+
+        resetButton.addEventListener('click', resetQuiz);
+
+        loadQuestion(currentQuestionId);
+
+    </script>
+</body>
+</html>
