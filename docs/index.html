@@ -260,9 +260,9 @@
     </head>
     <body class="antialiased">
         <!-- Audio Files from mixkit - Used With Permission -->
-            <!-- You are licensed to use the Item to create an End Product that incorporates the Item as well as other things, 
-            so that it is larger in scope and different in nature than the Item. You’re permitted to download, copy, modify, distribute 
-            and publicly perform the Sound Effect Items on any web or social media platform, in podcasts and in video games, 
+            <!-- You are licensed to use the Item to create an End Product that incorporates the Item as well as other things,
+            so that it is larger in scope and different in nature than the Item. You’re permitted to download, copy, modify, distribute
+            and publicly perform the Sound Effect Items on any web or social media platform, in podcasts and in video games,
             as well as in films and presentations distributed on CDs, DVDs, via TV or radio broadcast or internet based video on demand services.-->
         <audio id="switch-sound" src="https://assets.mixkit.co/active_storage/sfx/2585/2585-preview.mp3" preload="auto"></audio>
         <audio id="page-sound" src="https://assets.mixkit.co/active_storage/sfx/1530/1530-preview.mp3" preload="auto"></audio>
@@ -290,6 +290,9 @@
                     </button>
                     <button id="sacraments-main-tab" class="p-3 w-40 rounded-full text-center transition-colors duration-300 tab-glimmer">
                         Sacraments
+                    </button>
+                    <button id="quiz-main-tab" class="p-3 w-40 rounded-full text-center transition-colors duration-300 tab-glimmer">
+                        Quiz
                     </button>
                 </div>
 
@@ -472,7 +475,7 @@
                                     Podcast
                                 </h2>
                                 <p class="text-gray-500">
-                                    COMING SOON... Maybe 
+                                    COMING SOON... Maybe
                                 </p>
                             </div>
                             <div
@@ -523,6 +526,16 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div id="quizContentWrapper" class="hidden">
+                        <iframe
+                            src="./quiz.html"
+                            width="100%"
+                            frameborder="0"
+                            style="border:none"
+                        >
+                            Your browser does not support iframes.
+                        </iframe>
                     </div>
                 </main>
             </div>
@@ -1082,11 +1095,17 @@
             const sacramentsMainTab = document.getElementById(
                 "sacraments-main-tab",
             );
+            const quizMainTab = document.getElementById(
+              "quiz-main-tab",
+            );
             const bibleContentWrapper = document.getElementById(
                 "bible-content-wrapper",
             );
             const sacramentsContentWrapper = document.getElementById(
                 "sacraments-content-wrapper",
+            );
+            const quizContentWrapper = document.getElementById(
+              "quizContentWrapper"
             );
 
             // Bible Sub-tab Elements
@@ -1235,7 +1254,7 @@
                 button.addEventListener("click", () => {
                     sortSound.currentTime = 0;
                     sortSound.play();
-                    
+
                     if (mainTab === "bible") {
                         currentFilter = genreOrDenomination;
                         updateFilters(mainTab, subTab);
@@ -1639,9 +1658,12 @@
                 bibleMainTab.classList.add("tab-inactive");
                 sacramentsMainTab.classList.remove("tab-active");
                 sacramentsMainTab.classList.add("tab-inactive");
+                quizMainTab.classList.remove("tab-active");
+                quizMainTab.classList.add("tab-inactive");
 
                 bibleContentWrapper.classList.add("hidden");
                 sacramentsContentWrapper.classList.add("hidden");
+                quizContentWrapper.classList.add("hidden");
 
                 if (mainTab === "bible") {
                     bibleMainTab.classList.add("tab-active");
@@ -1654,6 +1676,11 @@
                     sacramentsContentWrapper.classList.remove("hidden");
                     renderSacramentSubTabs();
                     switchSubTab(currentMainTab, "baptism");
+                }
+                else if (mainTab === "quiz") {
+                  quizMainTab.classList.add("tab-active");
+                  quizMainTab.classList.remove("tab-inactive");
+                  quizContentWrapper.classList.remove("hidden");
                 }
             }
 
@@ -1705,6 +1732,9 @@
             );
             sacramentsMainTab.addEventListener("click", () =>
                 switchMainTab("sacraments"),
+            );
+            quizMainTab.addEventListener("click", () =>
+              switchMainTab("quiz"),
             );
 
             // Event Listeners for Bible Sub-tabs
