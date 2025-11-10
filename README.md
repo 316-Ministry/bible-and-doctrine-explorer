@@ -1,6 +1,6 @@
 # Bible Books & Divisions Explorer
 
-An interactive single-page site designed to help with easy exploration of the books of the Bible, including canonical and apocryphal texts, as well as a section on Christian sacraments. This project serves as an educational tool and should not in any way be considered as a definitive statement on behalf of any denomination, organization or institution. 
+An interactive site designed to help with easy exploration of the books of the Bible, including canonical and apocryphal texts, as well as to engage with other related topics. This project serves as an educational tool and should not in any way be considered as a definitive statement on behalf of any denomination, organization or institution. 
 
 ## Features
 
@@ -14,7 +14,9 @@ An interactive single-page site designed to help with easy exploration of the bo
   
 - **Videos:** There’s a section with embedded videos to provide an overview of the Bible's history and literary styles. The videos come from the Bible Project on YouTube, but they’re not in any way affiliated with this site or project. I just liked their overview videos - they’re very informative and visually cool.
   
-- **Sacraments Section:** An quick look at Christian sacraments, including their different interpretations across various denominations.
+- **Sacraments Section:** A quick look at Christian sacraments, including their different interpretations across various denominations.
+
+- **Denomination Quiz Section:** A short quiz that serves as a broad guess of your denominational alignment. It is by no means exhaustive, and deals very simply with topics that are admittedly much more nuanced than presented. Questions are based on key historical distinctions between denominations and are take from Redeemed Zoomer's flowchart which he recently revealed in a YT video which you can watch [https://youtu.be/4cug_xLQe8U](>here<)
   
 - **Responsive Design:** The layout should be responsive, but I’ve not tested it on mobile so… I hope it works!
   
