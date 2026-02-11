@@ -211,15 +211,6 @@
                 }
             }
 
-            .play-animate {
-              transition: transform 0.2s ease-in-out;
-            }
-            
-            .play-animate:hover {
-              transform: scale(1.1);
-              color: #3b82f6;
-            }
-
             /* Sticky Tab Stuff Here */
 
             .sticky {
@@ -335,12 +326,6 @@
                         </svg>
                         <svg id="moon-icon" class="w-6 h-6 moon-animate hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                        </svg>
-                    </button>
-                    <button id="toggleBtn" onclick="toggleAudio()">
-                        <svg id="play-icon" class="w-6 h-6 play-animate" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                          <circle stroke-linecap="round" stroke-linejoin="round" stroke-width="2" cx="12" cy="12" r="9" />
                         </svg>
                     </button>
                     <h1 class="text-3xl md:text-5xl font-bold font-serif text-[#A38D7B]"><i>Biblia Explicatus</i></h1>
@@ -2130,48 +2115,6 @@
             resetButton.addEventListener("click", resetQuiz);
 
             loadQuestion(currentQuestionId);
-
-            var player;
-              var isPlayerReady = false;
-            
-              var tag = document.createElement('script');
-              tag.src = "https://www.youtube.com/iframe_api";
-              var firstScriptTag = document.getElementsByTagName('script')[0];
-              firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-            
-              function onYouTubeIframeAPIReady() {
-                player = new YT.Player('youtube-audio-player', {
-                  height: '0',
-                  width: '0',
-                  videoId: 'LDfOrUjl30w',
-                  playerVars: {
-                    'autoplay': 0,
-                    'loop': 1,
-                    'playlist': 'LDfOrUjl30w'
-                  },
-                  events: {
-                    'onReady': onPlayerReady
-                  }
-                });
-              }
-            
-              function onPlayerReady(event) {
-                  isPlayerReady = true;
-                  console.log("Player is ready to go.");
-              }
-            
-              function toggleAudio() {
-                if (!isPlayerReady) {
-                    alert("Wait a second! The player is still loading.");
-                    return;
-                  }
-                
-                  if (player.getPlayerState() !== 1) { 
-                    player.playVideo();
-                  } else {
-                    player.pauseVideo();
-                  }
-              }
 
             // Initial load
             switchMainTab("bible");
