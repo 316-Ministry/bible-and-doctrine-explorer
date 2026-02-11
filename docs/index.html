@@ -2131,17 +2131,14 @@
 
             loadQuestion(currentQuestionId);
 
-            //Stuff for YT audio
             var player;
-              var isPlaying = false;
+              var isPlayerReady = false;
             
-              // 3. Load the YouTube API
               var tag = document.createElement('script');
               tag.src = "https://www.youtube.com/iframe_api";
               var firstScriptTag = document.getElementsByTagName('script')[0];
               firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
             
-              // 4. Create the player
               function onYouTubeIframeAPIReady() {
                 player = new YT.Player('youtube-audio-player', {
                   height: '0',
@@ -2159,16 +2156,21 @@
               }
             
               function onPlayerReady(event) {
+                  isPlayerReady = true;
+                  console.log("Player is ready to go.");
               }
             
               function toggleAudio() {
-                if (!isPlaying) {
-                  player.playVideo();
-                  isPlaying = true;
-                } else {
-                  player.pauseVideo();
-                  isPlaying = false;
-                }
+                if (!isPlayerReady) {
+                    alert("Wait a second! The player is still loading.");
+                    return;
+                  }
+                
+                  if (player.getPlayerState() !== 1) { 
+                    player.playVideo();
+                  } else {
+                    player.pauseVideo();
+                  }
               }
 
             // Initial load
