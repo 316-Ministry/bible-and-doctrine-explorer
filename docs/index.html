@@ -2146,11 +2146,11 @@
                 player = new YT.Player('youtube-audio-player', {
                   height: '0',
                   width: '0',
-                  videoId: 'https://youtu.be/LDfOrUjl30w',
+                  videoId: 'LDfOrUjl30w',
                   playerVars: {
                     'autoplay': 0,
                     'loop': 1,
-                    'playlist': 'https://youtu.be/LDfOrUjl30w'
+                    'playlist': 'LDfOrUjl30w'
                   },
                   events: {
                     'onReady': onPlayerReady
@@ -2164,11 +2164,9 @@
               function toggleAudio() {
                 if (!isPlaying) {
                   player.playVideo();
-                  document.getElementById('toggleBtn').innerText = "Pause Music";
                   isPlaying = true;
                 } else {
                   player.pauseVideo();
-                  document.getElementById('toggleBtn').innerText = "Play Music";
                   isPlaying = false;
                 }
               }
