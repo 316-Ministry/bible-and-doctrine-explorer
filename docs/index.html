@@ -211,6 +211,15 @@
                 }
             }
 
+            .play-animate {
+              transition: transform 0.2s ease-in-out;
+            }
+            
+            .play-animate:hover {
+              transform: scale(1.1);
+              color: #3b82f6;
+            }
+
             /* Sticky Tab Stuff Here */
 
             .sticky {
@@ -315,6 +324,8 @@
         <audio id="page-sound" src="https://assets.mixkit.co/active_storage/sfx/1530/1530-preview.mp3" preload="auto"></audio>
         <audio id="bubble-sound" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3" preload="auto"></audio>
         <audio id="sort-sound" src="https://assets.mixkit.co/active_storage/sfx/2002/2002-preview.mp3" preload="auto"></audio>
+        <!-- YT Video to load for music -->
+        <div id="youtube-audio-player" style="display: none;"></div>
         <!-- Main Content -->
             <div class="container mx-auto p-4 md:p-8 max-w-7xl">
                 <header class="text-center mb-4 relative sticky top-0 z-40 header-frosted">
@@ -324,6 +335,12 @@
                         </svg>
                         <svg id="moon-icon" class="w-6 h-6 moon-animate hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                        </svg>
+                    </button>
+                    <button id="toggleBtn" onclick="toggleAudio()">
+                        <svg id="play-icon" class="w-6 h-6 play-animate" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                          <circle stroke-linecap="round" stroke-linejoin="round" stroke-width="2" cx="12" cy="12" r="9" />
                         </svg>
                     </button>
                     <h1 class="text-3xl md:text-5xl font-bold font-serif text-[#A38D7B]"><i>Biblia Explicatus</i></h1>
@@ -2113,6 +2130,48 @@
             resetButton.addEventListener("click", resetQuiz);
 
             loadQuestion(currentQuestionId);
+
+            //Stuff for YT audio
+            var player;
+              var isPlaying = false;
+            
+              // 3. Load the YouTube API
+              var tag = document.createElement('script');
+              tag.src = "https://www.youtube.com/iframe_api";
+              var firstScriptTag = document.getElementsByTagName('script')[0];
+              firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            
+              // 4. Create the player
+              function onYouTubeIframeAPIReady() {
+                player = new YT.Player('youtube-audio-player', {
+                  height: '0',
+                  width: '0',
+                  videoId: 'https://youtu.be/LDfOrUjl30w',
+                  playerVars: {
+                    'autoplay': 0,
+                    'loop': 1,
+                    'playlist': 'https://youtu.be/LDfOrUjl30w'
+                  },
+                  events: {
+                    'onReady': onPlayerReady
+                  }
+                });
+              }
+            
+              function onPlayerReady(event) {
+              }
+            
+              function toggleAudio() {
+                if (!isPlaying) {
+                  player.playVideo();
+                  document.getElementById('toggleBtn').innerText = "Pause Music";
+                  isPlaying = true;
+                } else {
+                  player.pauseVideo();
+                  document.getElementById('toggleBtn').innerText = "Play Music";
+                  isPlaying = false;
+                }
+              }
 
             // Initial load
             switchMainTab("bible");
